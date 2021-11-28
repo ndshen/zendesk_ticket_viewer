@@ -1,6 +1,6 @@
 import requests
 from typing import Union
-from config import *
+from config import URL, USER_EMAIL, USER_PASSWORD
 
 class APIErrorException(Exception):
     """Raised when the request to api fails"""

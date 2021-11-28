@@ -1,7 +1,7 @@
 from typing import Callable
 
 from console.commands import CommandSyntaxException
-from console.display import display_api_error, display_warning, display_error
+from console.display import display_api_error, display_prompt, display_warning, display_error
 from api.ticket_service import APIErrorException
 
 
@@ -32,7 +32,7 @@ class Repl:
         
     def _show_prompt(self) -> None:
         if self.is_show_prompt:
-            print(self.prompt, end="")
+            display_prompt(self.prompt)
     
     def run(self) -> None:
         self._show_prompt()
