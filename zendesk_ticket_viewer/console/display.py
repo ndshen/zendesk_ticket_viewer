@@ -17,3 +17,8 @@ def display_api_error(err: APIErrorException) -> None:
 
 def display_single_ticket(ticket: dict) -> None:
     rich.print_json(data=ticket)
+
+def display_ticket_list(tickets: list[dict]) -> None:
+    for ticket in tickets:
+        print(ticket["id"])
+    # rich.print_json(data=tickets)

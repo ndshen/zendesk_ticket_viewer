@@ -1,4 +1,6 @@
 import requests
+from typing import Union
+from config import *
 
 class APIErrorException(Exception):
     """Raised when the request to api fails"""
@@ -8,19 +10,11 @@ class APIErrorException(Exception):
         self.message = message
         super().__init__(self.message)
 
-URL = "https://zccndshen.zendesk.com"
-USER_EMAIL = "ping-yao_shen@brown.edu"
-USER_PASSWORD = "ndshenzendesk"
-
-def get_ticket(ticket_id: int) -> dict:
-    """Returns a ticket json object"""
-    
-    endpoint = f"/api/v2/tickets/{ticket_id}.json"
+def call_get_api(endpoint: str) -> Union[dict, list[dict]]:
+    """GET request an api and returns its json format respond"""
     request_url = URL + endpoint
-
     resp = requests.get(request_url, auth=(USER_EMAIL, USER_PASSWORD))
     if resp.status_code != 200:
         raise APIErrorException(resp.status_code, resp.json(), f"Failed api request: {request_url}")
 
     return resp.json()
-

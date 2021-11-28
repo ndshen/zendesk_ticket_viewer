@@ -19,6 +19,12 @@ class Repl:
         self.commands[cmd]["action"] = action
         self.commands[cmd]["help"] = help_str
     
+    def add_extended_command(self, cmd: str, action: Callable) -> None:
+        self.extended_commands[cmd] = action
+
+    def clear_extended_command(self) -> None:
+        self.extended_commands = dict()
+    
     def get_help(self) -> None:
         indent = "  "
         for key, val in self.commands.items():
@@ -40,12 +46,24 @@ class Repl:
             
             elif cmd in self.commands:
                 try:
+                    self.clear_extended_command()
                     action = self.commands[cmd]["action"]
-                    action(payload)
+                    action(payload=payload, repl=self)
                 
                 except CommandSyntaxException as err:
                     display_warning(str(err))
                 
+                except APIErrorException as err:
+                    display_api_error(err)
+
+                except Exception as err:
+                    display_error(str(err))
+            
+            elif cmd in self.extended_commands:
+                try:
+                    action = self.extended_commands[cmd]
+                    action(payload=payload, repl=self)
+
                 except APIErrorException as err:
                     display_api_error(err)
 
