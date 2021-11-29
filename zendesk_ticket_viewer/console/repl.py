@@ -1,16 +1,18 @@
 from typing import Callable
 
 from console.commands import CommandSyntaxException
-from console.display import display_api_error, display_prompt, display_warning, display_error
 from api.ticket_service import APIErrorException
+from config import PROMPT
 
 
 class Repl:
-    prompt = "zendesk> "
-    welcome_prompt = "Welcome to zendesk ticket viewer. Type 'help' to see all the commands or 'quit' to exit the program."
+    prompt = PROMPT
+    welcome_msg = "Welcome to zendesk ticket viewer.\nType 'help' to see all the commands or 'quit' to exit the program."
 
-    def __init__(self, is_show_prompt=True) -> None:
+    def __init__(self, repl_displayer, is_show_prompt=True, show_welcome=True) -> None:
+        self.repl_displayer = repl_displayer
         self.is_show_prompt = is_show_prompt
+        self.show_welcome = show_welcome
         self.commands = dict()
         self.extended_commands = dict()
     
@@ -28,13 +30,16 @@ class Repl:
     def get_help(self) -> None:
         indent = "  "
         for key, val in self.commands.items():
-            print(f"{indent}{key}: {val['help']}")
+            self.repl_displayer.display_message(f"{indent}{key}: {val['help']}")
         
     def _show_prompt(self) -> None:
         if self.is_show_prompt:
-            display_prompt(self.prompt)
+            self.repl_displayer.display_prompt(self.prompt)
     
-    def run(self) -> None:
+    def run(self, single_command=False) -> None:
+        if self.show_welcome:
+            self.repl_displayer.display_message(self.welcome_msg)
+        
         self._show_prompt()
         
         while True:
@@ -51,13 +56,13 @@ class Repl:
                     action(payload=payload, repl=self)
                 
                 except CommandSyntaxException as err:
-                    display_warning(str(err))
+                    self.repl_displayer.display_warning(str(err))
                 
                 except APIErrorException as err:
-                    display_api_error(err)
+                    self.repl_displayer.display_api_error(err)
 
                 except Exception as err:
-                    display_error(str(err))
+                    self.repl_displayer.display_error(str(err))
             
             elif cmd in self.extended_commands:
                 try:
@@ -65,13 +70,17 @@ class Repl:
                     action(payload=payload, repl=self)
 
                 except APIErrorException as err:
-                    display_api_error(err)
+                    self.repl_displayer.display_api_error(err)
 
                 except Exception as err:
-                    display_error(str(err))
+                    self.repl_displayer.display_error(str(err))
             
             else:
-                display_warning("Command not found")
+                self.repl_displayer.display_warning("Command not found")
+
+
+            if single_command:
+                break
 
             self._show_prompt()
 
