@@ -1,8 +1,9 @@
-from rich.console import Console
-from rich.table import Table
-from rich.style import Style
-from rich.color import Color
 from api.ticket_service import APIErrorException
+from rich.color import Color
+from rich.console import Console
+from rich.style import Style
+from rich.table import Table
+
 from zendesk_ticket_viewer.config import PROMPT_BGCOLOR_RGB, PROMPT_COLOR_RGB
 
 
@@ -11,7 +12,15 @@ class RichDisplayer:
         self.console = Console()
 
     def display_prompt(self, prompt: str) -> None:
-        self.console.print(prompt, style=Style(bgcolor=Color.from_rgb(*PROMPT_BGCOLOR_RGB), color=Color.from_rgb(*PROMPT_COLOR_RGB), bold=True) ,end="")
+        self.console.print(
+            prompt,
+            style=Style(
+                bgcolor=Color.from_rgb(*PROMPT_BGCOLOR_RGB),
+                color=Color.from_rgb(*PROMPT_COLOR_RGB),
+                bold=True,
+            ),
+            end="",
+        )
 
     def display_message(self, message: str) -> None:
         self.console.print(message)
@@ -28,8 +37,13 @@ class RichDisplayer:
         self.display_message(f"Status Code: {err.status_code}, {resp}")
 
     def display_single_ticket(self, ticket: dict) -> None:
-        table = Table.grid(padding=(1,3), pad_edge=True)
-        table.add_column("Name", no_wrap=True, justify="left", style=Style(bold=True, color=Color.from_rgb(32,178,170)))
+        table = Table.grid(padding=(1, 3), pad_edge=True)
+        table.add_column(
+            "Name",
+            no_wrap=True,
+            justify="left",
+            style=Style(bold=True, color=Color.from_rgb(32, 178, 170)),
+        )
         table.add_column("Content")
 
         table.add_row("Subject", ticket.get("subject", ""))
@@ -40,7 +54,11 @@ class RichDisplayer:
         self.console.print(table)
 
     def display_ticket_list(self, tickets: list[dict]) -> None:
-        table = Table(show_header=True, header_style=Style(bold=True, color=Color.from_rgb(32,178,170)), caption="'p' to previous page, 'n' to next page")
+        table = Table(
+            show_header=True,
+            header_style=Style(bold=True, color=Color.from_rgb(32, 178, 170)),
+            caption="'p' to previous page, 'n' to next page",
+        )
         table.add_column("Id", style="dim")
         table.add_column("Status")
         table.add_column("Subject")
@@ -52,5 +70,5 @@ class RichDisplayer:
             subject = ticket.get("subject", "")
 
             table.add_row(ticket_id, status, subject, created_at)
-        
+
         self.console.print(table)
