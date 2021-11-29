@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.style import Style
 from rich.table import Table
 
-from zendesk_ticket_viewer.config import PROMPT_BGCOLOR_RGB, PROMPT_COLOR_RGB
+from config import PROMPT_BGCOLOR_RGB, PROMPT_COLOR_RGB
 
 
 class RichDisplayer:
