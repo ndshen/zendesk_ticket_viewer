@@ -1,6 +1,6 @@
 # Zendesk Ticket Viewer
 
-This is a coding challenge for Zendesk 2022 Summer Internship by _PingYao Shen_.
+This is a coding challenge for Zendesk 2022 Summer Internship by _\_PingYao Shen_.  
 See [demo](https://terminalizer.com/view/160a8e4f5403).
 
 ## Prerequisite

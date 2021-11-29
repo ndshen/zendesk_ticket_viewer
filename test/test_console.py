@@ -1,7 +1,5 @@
-import subprocess
 import unittest
 from io import StringIO
-from time import sleep
 from unittest.mock import patch
 
 from zendesk_ticket_viewer.api.ticket_service import APIErrorException
